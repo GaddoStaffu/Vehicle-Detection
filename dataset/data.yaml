@@ -1,0 +1,33 @@
+train: D:\Coding\VehicleDetection\dataset\train
+val: D:\Coding\VehicleDetection\dataset\val
+
+nc: 2
+names:
+  - motor
+  - car
+
+roboflow:
+  workspace: nada-majd-e4uhb
+  project: n_o_2
+  version: 21
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/nada-majd-e4uhb/n_o_2/dataset/21
+
+# Enable light data augmentation
+augment: True
+mosaic: 0.5 # Reduced blending
+mixup: 0.2 # Minimal blending
+
+# Geometric Augmentations
+fliplr: 0.5 # Moderate horizontal flips
+scale: 0.1 # Slight scaling
+translate: 0.1 # Minimal shifting
+
+# Blur & Noise (Minimal, to avoid degrading image quality)
+blur: 0.05
+noise: 0.05
+
+# Auto Weighting (Increase Augmentations Only for Motorcycle)
+class_weights:
+  - 5.0 # Increase bike weighting to balance the dataset
+  - 0.5 # Keep car weighting normal

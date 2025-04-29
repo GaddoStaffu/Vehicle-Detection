@@ -1,4 +1,5 @@
 .venv
 *.jpg
 *.npy
-/dataset/*
+/dataset/train/*
+/dataset/val/*
