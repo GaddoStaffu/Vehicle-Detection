@@ -4,7 +4,7 @@ import os
 from ultralytics import YOLO
 
 # Load the trained YOLO model
-model = YOLO(r"outputs\yolov8s_first_model\weights\best.pt").to("cpu")  # Replace with the path to your trained model
+model = YOLO(r"outputs\yolov8s_first_model\weights\best.pt")#.to("cpu")  # Replace with the path to your trained model
 
 def process_frame(frame):
     # Define a color mapping for each class
