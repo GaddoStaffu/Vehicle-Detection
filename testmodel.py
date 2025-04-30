@@ -1,10 +1,10 @@
 import cv2
-import argparse
 import os
+from tkinter import Tk, Button, Label, filedialog, messagebox
 from ultralytics import YOLO
 
 # Load the trained YOLO model
-model = YOLO(r"outputs\yolov8s_first_model\weights\best.pt")#.to("cpu")  # Replace with the path to your trained model
+model = YOLO(r"outputs\yolov8s_first_model\weights\best.pt")  # Replace with the path to your trained model
 
 def process_frame(frame):
     # Define a color mapping for each class
@@ -15,7 +15,7 @@ def process_frame(frame):
 
     # Define a label replacement mapping
     label_replacements = {
-        "bike": "motor",  # Replace "bike" with "car"
+        "bike": "motor",  # Replace "bike" with "motor"
     }
 
     results = model(frame)
@@ -34,23 +34,11 @@ def process_frame(frame):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     return frame
 
-def process_webcam(camera_index=0):
-    capture = cv2.VideoCapture(camera_index)
-    capture.set(3, 1366)
-    capture.set(4, 768)
-    if not capture.isOpened():
-        print(f"Error: Unable to access camera {camera_index}.")
-        return
-    print(f"Using camera {camera_index}. Press 'q' to quit.")
-    while True:
-        ret, frame = capture.read()
-        if not ret:
-            break
-        frame = process_frame(frame)
-        cv2.imshow("YOLO Webcam", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    capture.release()
+def process_image(image_path):
+    frame = cv2.imread(image_path)
+    frame = process_frame(frame)
+    cv2.imshow("YOLO Image", frame)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def process_video(video_path):
@@ -66,34 +54,51 @@ def process_video(video_path):
     capture.release()
     cv2.destroyAllWindows()
 
-def process_image(image_path):
-    frame = cv2.imread(image_path)
-    frame = process_frame(frame)
-    cv2.imshow("YOLO Image", frame)
-    cv2.waitKey(0)
+def process_webcam():
+    capture = cv2.VideoCapture(0)
+    if not capture.isOpened():
+        messagebox.showerror("Error", "Unable to access the webcam.")
+        return
+    while True:
+        ret, frame = capture.read()
+        if not ret:
+            break
+        frame = process_frame(frame)
+        cv2.imshow("YOLO Webcam", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    capture.release()
     cv2.destroyAllWindows()
 
-def process_images(folder_path):
-    for img_name in os.listdir(folder_path):
-        img_path = os.path.join(folder_path, img_name)
-        if img_path.lower().endswith((".jpg", ".jpeg", ".png")):
-            process_image(img_path)
+def select_video():
+    file_path = filedialog.askopenfilename(filetypes=[("Video Files", "*.mp4;*.avi;*.mov")])
+    if file_path:
+        process_video(file_path)
+
+def start_webcam():
+    process_webcam()
+    
+def select_images():
+    file_paths = filedialog.askopenfilenames(filetypes=[("Image Files", "*.jpg;*.jpeg;*.png")])
+    if file_paths:
+        for file_path in file_paths:
+            process_image(file_path)
+
+# Update the GUI
+def create_gui():
+    root = Tk()
+    root.title("YOLO Vehicle Detection")
+    root.geometry("400x200")
+
+    Label(root, text="YOLO Vehicle Detection", font=("Arial", 16)).pack(pady=10)
+
+    Button(root, text="Select Images", command=select_images, width=20).pack(pady=5)
+    Button(root, text="Select Video", command=select_video, width=20).pack(pady=5)
+    Button(root, text="Start Webcam", command=start_webcam, width=20).pack(pady=5)
+
+    Button(root, text="Exit", command=root.quit, width=20).pack(pady=10)
+
+    root.mainloop()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--webcam", type=int, nargs="?", const=0, help="Use webcam for live detection (default: 0)")
-    parser.add_argument("--videofile", type=str, help="Path to video file")
-    parser.add_argument("--image", type=str, help="Path to an image file")
-    parser.add_argument("--images", type=str, help="Path to a folder containing images")
-    args = parser.parse_args()
-
-    if args.webcam is not None:
-        process_webcam(args.webcam)
-    elif args.videofile:
-        process_video(args.videofile)
-    elif args.image:
-        process_image(args.image)
-    elif args.images:
-        process_images(args.images)
-    else:
-        print("Please specify an input method: --webcam, --videofile, --image, or --images")
+    create_gui()
