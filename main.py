@@ -24,7 +24,7 @@ def train_model(model_path, data_path, resume=False):
         batch=8,
         device=0,
         patience=50,
-        amp=False,
+        amp=True,
         workers=2,
         optimizer='AdamW',
         cache='disk',
@@ -37,7 +37,7 @@ def train_model(model_path, data_path, resume=False):
     print("Training complete! Model is now trained for detecting only bikes and cars.")
 
 if __name__ == '__main__':
-    model_filename = r"D:\Coding\VehicleDetection\outputs\vehicle_detection\weights\best.pt"
+    model_filename = os.path.join("outputs", "vehicle_detection", "weights", "best.pt")
     model_url = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8s.pt"
     model_path = download_model(model_filename, model_url)
     data_path = os.path.join(os.getcwd(), "dataset", "data.yaml")
