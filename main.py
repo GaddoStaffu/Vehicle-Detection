@@ -39,10 +39,10 @@ def train_model(model_path, data_path, resume=False):
 
 if __name__ == '__main__':
     # Point to the best.pt checkpoint
-    model_filename = os.path.join("yolov8s.pt")
+    model_filename = os.path.join("outputs","vehicle_detection","weights","best.pt")
     model_url = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8s.pt"
     model_path = download_model(model_filename, model_url)
     data_path = os.path.join(os.getcwd(), "dataset", "data.yaml")
     
     # Continue training from the best.pt checkpoint
-    train_model(model_path, data_path, resume=False)
+    train_model(model_path, data_path, resume=True)
