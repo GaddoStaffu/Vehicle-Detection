@@ -4,7 +4,7 @@ from tkinter import Tk, Button, Label, filedialog, messagebox
 from ultralytics import YOLO
 
 # Load the trained YOLO model
-model = YOLO(r"outputs\yolov8s_first_model\weights\best.pt")  # Replace with the path to your trained model
+model = YOLO(r"outputs/vehicle_detection2\weights\best.pt")  # Replace with the path to your trained model
 
 def process_frame(frame):
     # Define a color mapping for each class

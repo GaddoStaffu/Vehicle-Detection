@@ -16,10 +16,10 @@ def download_model(model_filename, model_url):
     return model_path
 
 def train_model(model_path, data_path, resume=False):
-    model = YOLO(model_path)
+    model = YOLO(model_path)  # Load the best.pt checkpoint
     model.train(
         data=data_path,
-        epochs=100,
+        epochs=1000,  # Set the new total number of epochs
         imgsz=640,
         batch=8,
         device=0,
@@ -29,7 +29,7 @@ def train_model(model_path, data_path, resume=False):
         optimizer='AdamW',
         cache='disk',
         dropout=0.1,
-        resume=resume,
+        resume=resume,  # Resume training from the checkpoint
         project=r"outputs",  # Save outputs to D: drive
         name="vehicle_detection",  # Name of the training run
         exist_ok=False  # Overwrite existing directory if it exists
@@ -37,10 +37,11 @@ def train_model(model_path, data_path, resume=False):
     print("Training complete! Model is now trained for detecting only bikes and cars.")
 
 if __name__ == '__main__':
-    model_filename = os.path.join("outputs", "vehicle_detection", "weights", "best.pt")
+    # Point to the best.pt checkpoint
+    model_filename = os.path.join("yolov8s.pt")
     model_url = "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8s.pt"
     model_path = download_model(model_filename, model_url)
     data_path = os.path.join(os.getcwd(), "dataset", "data.yaml")
     
-    # Set resume=True to continue training from the last model
-    train_model(model_path, data_path, resume=True)
+    # Continue training from the best.pt checkpoint
+    train_model(model_path, data_path, resume=False)
