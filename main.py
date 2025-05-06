@@ -27,12 +27,13 @@ def train_model(model_path, data_path, resume=False):
         amp=True,
         workers=4,
         optimizer='AdamW',
+        lr0=0.001,
         cache='disk',
         dropout=0.1,
         resume=resume,  # Resume training from the checkpoint
         project=r"outputs",  # Save outputs to D: drive
         name="vehicle_detection",  # Name of the training run
-        exist_ok=False  # Overwrite existing directory if it exists
+        exist_ok=True  # Overwrite existing directory if it exists
     )
     print("Training complete! Model is now trained for detecting only bikes and cars.")
 
